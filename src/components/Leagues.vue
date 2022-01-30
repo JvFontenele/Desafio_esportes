@@ -1,19 +1,26 @@
 <template>
-  <v-sheet rounded="lg">
+  <v-sheet max-height="80vh" rounded="lg">
+    <div
+      class="d-flex align-center justify-center pa-4 mx-auto text-h6"
+      outlined
+    >
+      Leagues
+    </div>
+    <v-divider class="mx-6"></v-divider>
+    <!-- pedir ajuda -->
     <v-list
       color="transparent"
-      max-height="88vh"
+      max-height="70vh"
       class="scrolStyle pa-3 overflow-auto"
     >
       <v-list-item v-for="league in leagues.data" :key="league.id">
-        <v-list-item-content class="mx-auto d-flex justify-center">
-          <v-card max-height="100" max-width="100" class="pa-1" link>
-            <v-img
-              max-height="80"
-              max-width="80"
-              :src="league.logos.light"
-              class="mx-auto"
-            ></v-img
+        <v-list-item-content class="d-flex justify-center flex-column">
+          <v-card
+            class="d-flex align-center justify-center pa-3"
+            link
+            to="/partidas"
+          >
+            <v-img height="90" width="90" :src="league.logos.light"></v-img
           ></v-card>
         </v-list-item-content>
       </v-list-item>
