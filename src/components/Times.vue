@@ -1,17 +1,14 @@
 <template>
-  <div class="pa-3">
+  <div v-if="leagueURL" class="pa-3">
     <div>
       <v-data-table
         fixed-header
-        height="72vh"
         :headers="headers"
         :items="timesApi"
-        :page.sync="page"
-        :items-per-page="12"
+        :items-per-page="100"
         hide-default-footer
-        @page-count="pageCount = $event"
       >
-        <template v-slot:item.team.logos[0].href="{ item }">
+        <template v-slot:item.logo="{ item }">
           <v-img
             class="ml-5"
             max-height="40"
@@ -20,48 +17,8 @@
           ></v-img>
         </template>
       </v-data-table>
-      <div class="text-center mt-3">
-        <v-pagination
-          color="green"
-          v-model="page"
-          :length="pageCount"
-          circle
-          prev-icon="mdi-menu-left"
-          next-icon="mdi-menu-right"
-        ></v-pagination>
-      </div>
+      <div class="text-center mt-3"></div>
     </div>
-    <!--  <v-simple-table fixed-header height="77vh">
-      <template v-slot:default>
-        <thead>
-          <tr>
-            <th class="text-left"></th>
-            <th class="text-left text-h6">Clube</th>
-            <th class="text-left">Pts</th>
-            <th class="text-left">Vit</th>
-            <th class="text-left">Der</th>
-            <th class="text-left text-h6">Ultimos jogos</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(time, index) in timesApi" :key="index" to="/partidas">
-            <td>
-              <v-img
-                :src="time.team.logos[0].href"
-                class="ma-1"
-                max-height="35"
-                max-width="35"
-              ></v-img>
-            </td>
-            <td>{{ time.team.name }}</td>
-            <td>{{ time.stats[6].value }}</td>
-            <td>{{ time.stats[0].value }}</td>
-            <td>{{ time.stats[1].value }}</td>
-            <td><v-icon color="red" large></v-icon></td>
-          </tr>
-        </tbody>
-      </template>
-    </v-simple-table> -->
   </div>
 </template>
 
@@ -77,7 +34,7 @@ export default {
       headers: [
         {
           text: "Clube",
-          value: "team.logos[0].href",
+          value: "logo",
         },
         { text: "", value: "team.name" },
         { text: "Pts", value: "stats[6].value" },
@@ -91,10 +48,9 @@ export default {
   methods: {
     getApi() {
       api
-        .get(`/leagues/${this.leagueURL}/standings?season=2021`)
+        .get(`/leagues/${this.leagueURL}/standings?season=${this.ano}`)
         .then((response) => {
           this.timesApi = response.data.data.standings;
-          console.log(response.data.data.standings.team);
         });
     },
   },
@@ -102,9 +58,15 @@ export default {
     leagueURL() {
       return this.$store.state.league;
     },
+    ano() {
+      return this.$store.state.ano;
+    },
   },
   watch: {
     leagueURL() {
+      this.getApi();
+    },
+    ano() {
       this.getApi();
     },
   },

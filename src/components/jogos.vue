@@ -1,4 +1,4 @@
-<template><div>rfgerte4t4</div></template>
+<template></template>
 
 <script>
 export default {};

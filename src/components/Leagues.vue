@@ -1,30 +1,32 @@
 <template>
-  <v-sheet max-height="80vh" rounded="lg">
-    <div
-      class="d-flex align-center justify-center pa-4 mx-auto text-h6"
-      outlined
-    >
-      Leagues
-    </div>
-    <v-divider class="mx-6"></v-divider>
-    <!-- pedir ajuda -->
-    <v-list
-      color="transparent"
-      max-height="70vh"
-      class="scrolStyle pa-3 overflow-auto"
-    >
-      <v-list-item v-for="league in leagues.data" :key="league.id">
-        <v-list-item-content class="d-flex justify-center flex-column">
-          <v-card
-            :color="leagueURL == league.id ? 'green lighten-2' : ''"
-            class="d-flex align-center justify-center pa-3"
-            @click="changeUser(league.id)"
+  <v-sheet rounded="lg" class="mb-3">
+    <v-container fluid>
+      <v-row align="center" class="px-5">
+        <v-col class="d-flex" cols="2" sm="9">
+          <v-select
+            v-model="value"
+            :items="leagues.data"
+            item-text="name"
+            item-value="id"
+            label="Select League"
+            :click="changeUser(value)"
           >
-            <v-img height="90" width="90" :src="league.logos.light"></v-img
-          ></v-card>
-        </v-list-item-content>
-      </v-list-item>
-    </v-list>
+          </v-select
+        ></v-col>
+        <v-col class="d-flex" cols="2" sm="3">
+          <v-select
+            v-model="ano"
+            :items="anos"
+            item-text="year"
+            item-value="year"
+            label="Select ano"
+            value="2021"
+            :click="changeAno(ano)"
+          >
+          </v-select
+        ></v-col>
+      </v-row>
+    </v-container>
   </v-sheet>
 </template>
 
@@ -38,10 +40,20 @@ export default {
   data() {
     return {
       leagues: [],
+      value: "bra.1",
+      anos: ["2021", "2020", "2019"],
+      ano: "2021",
     };
   },
   methods: {
-    ...mapActions(["changeUser"]),
+    ...mapActions(["changeUser", "changeAno"]),
+    getAno() {
+      api.get(`/leagues/${this.value}/seasons`).then((response) => {
+        this.anos = response.data.data.seasons;
+        console.log("mudou");
+        this.ano = "2021";
+      });
+    },
     getApi() {
       api.get("/leagues").then((response) => {
         this.leagues = response.data;
@@ -53,8 +65,14 @@ export default {
       return this.$store.state.league;
     },
   },
+  watch: {
+    leagueURL() {
+      this.getAno();
+    },
+  },
   created() {
     this.getApi();
+    this.getAno();
   },
 };
 </script>
