@@ -78,4 +78,10 @@ export default {
 </script>
 
 <style>
+tbody tr:nth-child(-n + 4) {
+  background: rgba(0, 255, 106, 0.05);
+}
+tbody tr:nth-last-child(-n + 3) {
+  background-color: rgba(255, 0, 0, 0.05);
+}
 </style>
