@@ -16,9 +16,9 @@
       <v-list-item v-for="league in leagues.data" :key="league.id">
         <v-list-item-content class="d-flex justify-center flex-column">
           <v-card
+            :color="leagueURL == league.id ? 'green lighten-2' : ''"
             class="d-flex align-center justify-center pa-3"
-            link
-            to="/partidas"
+            @click="changeUser(league.id)"
           >
             <v-img height="90" width="90" :src="league.logos.light"></v-img
           ></v-card>
@@ -29,6 +29,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 import { api } from "../services.js";
 
 export default {
@@ -39,12 +41,16 @@ export default {
     };
   },
   methods: {
+    ...mapActions(["changeUser"]),
     getApi() {
-      api
-        .get("https://api-football-standings.azharimm.site/leagues")
-        .then((response) => {
-          this.leagues = response.data;
-        });
+      api.get("/leagues").then((response) => {
+        this.leagues = response.data;
+      });
+    },
+  },
+  computed: {
+    leagueURL() {
+      return this.$store.state.league;
     },
   },
   created() {

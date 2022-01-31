@@ -2,6 +2,7 @@
   <div class="pa-3">
     <div>
       <v-data-table
+        fixed-header
         height="72vh"
         :headers="headers"
         :items="timesApi"
@@ -21,7 +22,7 @@
       </v-data-table>
       <div class="text-center mt-3">
         <v-pagination
-          color="red"
+          color="green"
           v-model="page"
           :length="pageCount"
           circle
@@ -75,10 +76,10 @@ export default {
       pageCount: 0,
       headers: [
         {
-          text: "logos",
+          text: "Clube",
           value: "team.logos[0].href",
         },
-        { text: "Clube", value: "team.name" },
+        { text: "", value: "team.name" },
         { text: "Pts", value: "stats[6].value" },
         { text: "Vit", value: "stats[0].value" },
         { text: "Der", value: "stats[1].value" },
@@ -90,15 +91,24 @@ export default {
   methods: {
     getApi() {
       api
-        .get(
-          "https://api-football-standings.azharimm.site/leagues/bra.1/standings?season=2021"
-        )
+        .get(`/leagues/${this.leagueURL}/standings?season=2021`)
         .then((response) => {
           this.timesApi = response.data.data.standings;
           console.log(response.data.data.standings.team);
         });
     },
   },
+  computed: {
+    leagueURL() {
+      return this.$store.state.league;
+    },
+  },
+  watch: {
+    leagueURL() {
+      this.getApi();
+    },
+  },
+
   created() {
     this.getApi();
   },
